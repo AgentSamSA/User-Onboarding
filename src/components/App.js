@@ -33,7 +33,7 @@ function App() {
     axios
       .get("https://reqres.in/api/users")
       .then(res => {
-        setUsers(res.data);
+        setUsers(res.data.data);
       })
       .catch(err => {
         console.log("something went wrong!", err);
@@ -44,13 +44,11 @@ function App() {
     axios
       .post("https://reqres.in/api/users", newUser)
       .then(res => {
-        console.log(res);
-        setUsers(res.data, ...users);
-        setFormValues(initialFormValues);
+        console.log(res.data);
+        setUsers([res.data, ...users]);
       })
       .catch(err => {
         console.log("something went wrong!", err);
-        setFormValues(initialFormValues);
       });
   }
 
@@ -81,9 +79,10 @@ function App() {
       email: formValues.email.trim(),
       password: formValues.password.trim(),
       role: formValues.role.trim(),
-      termsOfService: formValues.termsOfService.trim(),
+      termsOfService: formValues.termsOfService,
     }
     postNewUser(newUser);
+    setFormValues(initialFormValues);
   }
 
   useEffect(() => {
@@ -107,13 +106,13 @@ function App() {
         errors={formErrors}
       />
 
-      {/* {
+      {
         users.map(user => {
           return (
             <User key={user.id} details={user} />
           )
         })
-      } */}
+      }
     </div>
   )
 }
