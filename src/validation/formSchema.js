@@ -16,6 +16,6 @@ export default yup.object().shape({
         .required("Enter a password"),
     role: yup
         .string()
-        .oneOf(["juniordev", "seniordev", "projectmanager", "director"], "Please select a role"),
+        .oneOf(["Junior Developer", "Senior Developer", "Project Manager", "Director"], "Please select a role"),
     termsOfService: yup.boolean().oneOf([true], "Please accept the terms of service"),
 })
