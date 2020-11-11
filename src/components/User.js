@@ -1,7 +1,11 @@
 import React from "react";
 
-function User({ details }) {
-    if (!details) return <h3>Loading user data...</h3>
+function User(props) {
+    const { details } = props;
+    
+    if (!details) {
+        return <h3>Loading user data...</h3>
+    }
 
     return (
         <div className="user container">
