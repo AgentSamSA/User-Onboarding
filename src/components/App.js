@@ -3,7 +3,8 @@ import * as yup from "yup";
 import axios from "axios";
 import './App.css';
 import Form from "./Form";
-import schema from "../validation/formSchema"; 
+import User from "./User";
+import schema from "../validation/formSchema";
 
 const initialFormValues = {
   name: "",
@@ -17,6 +18,7 @@ const intialFormErrors = {
   name: "",
   email: "",
   password: "",
+  role: "",
 }
 
 const initialDisabled = true;
@@ -29,44 +31,44 @@ function App() {
 
   const getUsers = () => {
     axios
-    .get("https://reqres.in/api/users")
-    .then(res => {
-      setUsers(res.data);
-    })
-    .catch(err => {
-      console.log("something went wrong!", err);
-    });
+      .get("https://reqres.in/api/users")
+      .then(res => {
+        setUsers(res.data);
+      })
+      .catch(err => {
+        console.log("something went wrong!", err);
+      });
   }
 
   const postNewUser = newUser => {
     axios
-    .post("https://reqres.in/api/users", newUser)
-    .then(res => {
-      console.log(res);
-      setUsers(res, ...users);
-      setFormValues(initialFormValues);
-    })
-    .catch(err => {
-      console.log("something went wrong!", err);
-      setFormValues(initialFormValues);
-    })
+      .post("https://reqres.in/api/users", newUser)
+      .then(res => {
+        console.log(res);
+        setUsers(res.data, ...users);
+        setFormValues(initialFormValues);
+      })
+      .catch(err => {
+        console.log("something went wrong!", err);
+        setFormValues(initialFormValues);
+      });
   }
 
   const changeInput = (name, value) => {
     yup.reach(schema, name)
-    .validate(value)
-    .then(() => {
-      setFormErrors({
-        ...formErrors,
-        [name]: "",
+      .validate(value)
+      .then(() => {
+        setFormErrors({
+          ...formErrors,
+          [name]: "",
+        });
+      })
+      .catch((err) => {
+        setFormErrors({
+          ...formErrors,
+          [name]: err.errors[0],
+        });
       });
-    })
-    .catch((err) => {
-      setFormErrors({
-        ...formErrors,
-        [name]: err.errors[0],
-      });
-    });
     setFormValues({
       ...formValues,
       [name]: value,
@@ -95,18 +97,25 @@ function App() {
   }, [formValues]);
 
   return (
-    <div>
-    <Form />
+    <div className="container">
+      <header><h1>Onboard Users App</h1></header>
+      <Form
+        values={formValues}
+        change={changeInput}
+        submit={submitForm}
+        disabled={disabled}
+        errors={formErrors}
+      />
 
-    {
-      users.map(user => {
-        return (
-          <pre>{user.stringify()}</pre>
-        )
-      })
-    }
+      {
+        users.map(user => {
+          return (
+            <User key={user.id} details={user} />
+          )
+        })
+      }
     </div>
-  );
+  )
 }
 
 export default App;
